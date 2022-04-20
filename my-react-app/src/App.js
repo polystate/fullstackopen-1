@@ -1,58 +1,55 @@
-const Header = (props) => {
-  return <h1>{props.course}</h1>;
+import { useState } from "react";
+
+const Button = (props) => {
+  return (
+    <button onClick={() => props.method(props.value + 1)}>{props.label}</button>
+  );
 };
 
-const Part = (props) => {
+const StatisticLine = (props) => {
   return (
     <p>
-      {props.title} {props.num}
+      {props.text} {props.value}
     </p>
   );
 };
 
-const Content = () => {
-  return (
-    <>
-      <Part title="Fundamentals of React" num={10} />
-      <Part title="Using props to pass data" num={7} />
-      <Part title="State of a component" num={14} />
-    </>
-  );
-};
-
-const Total = (props) => {
-  return (
-    <p>
-      {props.parts[0]["exercises"] +
-        props.parts[1]["exercises"] +
-        props.parts[2]["exercises"]}
-    </p>
-  );
+const Statistics = (props) => {
+  const total = props.good + props.neutral + props.bad;
+  if (total > 0) {
+    return (
+      <>
+        <h1>statistics</h1>
+        <StatisticLine text="good" value={props.good} />
+        <StatisticLine text="neutral" value={props.neutral} />
+        <StatisticLine text="bad" value={props.bad} />
+        <StatisticLine text="all" value={total} />
+        <StatisticLine
+          text="average"
+          value={(props.good - props.bad) / total}
+        />
+        <StatisticLine
+          text="positive"
+          value={(props.good / total) * 100 + " %"}
+        />
+      </>
+    );
+  }
+  return <p>No feedback given</p>;
 };
 
 const App = () => {
-  const course = {
-    name: "Half Stack application development",
-    parts: [
-      {
-        name: "Fundamentals of React",
-        exercises: 10,
-      },
-      {
-        name: "Using props to pass data",
-        exercises: 7,
-      },
-      {
-        name: "State of a component",
-        exercises: 14,
-      },
-    ],
-  };
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
   return (
     <div>
-      <Header course={course.name} />
-      <Content parts={course.parts} />
-      <Total parts={course.parts} />
+      <h1>give feedback</h1>
+      <Button method={setGood} value={good} label="good" />
+      <Button method={setNeutral} value={neutral} label="neutral" />
+      <Button method={setBad} value={bad} label="bad" />
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   );
 };
